@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'war'
+}
+
+group = 'com.cookie'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'javax.validation:validation-api:2.0.0.Final'
+
+	//implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+	testImplementation 'org.mockito:mockito-junit-jupiter:2.23.4'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+	compile group: 'com.opencsv', name: 'opencsv', version: '5.2'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+}
+sourceSets {
+	test {
+		resources.srcDirs = ['src/test/resources']
+	}
+}
+
+task cookieAppRun(type: JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = 'com.cookie.app.CookieApplication'
+	if(project.hasProperty('filename') && project.hasProperty('date')){
+		args(filename, date);
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+task copyTestResources(type: Copy) {
+	from "${projectDir}/src/test/resources"
+	into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
